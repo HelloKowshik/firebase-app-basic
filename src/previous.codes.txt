@@ -1,0 +1,157 @@
+//App.js
+import React, { useState } from 'react';
+import './App.css';
+import * as firebase from "firebase/app";
+import "firebase/auth";
+import firebaseConfig from './firebase.config';
+
+firebase.initializeApp(firebaseConfig);
+function App() {
+  const [user, setUser] = useState({
+    isSignedIn: false,
+    name: '',
+    email: '',
+    photo : ''
+  });
+  const provider = new firebase.auth.GoogleAuthProvider();
+  let handleSignIn = () => { 
+    firebase.auth().signInWithPopup(provider)
+      .then(res => {
+        const { displayName, email, photoURL } = res.user;
+        const signedInUser = {
+          isSignedIn: true,
+          name: displayName,
+          email: email,
+          photo: photoURL
+        };
+        setUser(signedInUser);
+        console.log(signedInUser);
+      })
+      .catch(err => {
+        console.log(err);
+        console.log(err.message);
+    })
+  };
+  let handleSignOut = () => { 
+    firebase.auth().signOut()
+      .then(res => { 
+        const signedOutUser = {
+          isSignedIn: false,
+          name: '',
+          email: '',
+          photo: '' 
+        }
+        setUser(signedOutUser);
+      })
+      .catch(err => { 
+        console.log(err.message);
+      });
+  };
+  return (
+    <div className="App">
+      {
+        user.isSignedIn ? <button onClick = {handleSignOut} className = "btn btn-lg btn-primary mt-1">Sign Out</button> : <button onClick = {handleSignIn} className = "btn btn-lg btn-success mt-1">Sign In</button>
+      }
+      {
+        user.isSignedIn && <div>
+          <h3>Welcome, {user.name}</h3>
+          <h4>{user.email}</h4>
+          <img src={user.photo} alt=""/>
+        </div>
+      }
+    </div>
+  );
+}
+
+export default App;
+///Ends App.js
+
+////App.js(2)/////
+
+import React, { useState } from 'react';
+import './App.css';
+import * as firebase from "firebase/app";
+import "firebase/auth";
+import firebaseConfig from './firebase.config';
+
+firebase.initializeApp(firebaseConfig);
+function App() {
+  const [user, setUser] = useState({
+    isSignedIn: false,
+    name: '',
+    email: '',
+    photo : ''
+  });
+  const provider = new firebase.auth.GoogleAuthProvider();
+  let handleSignIn = () => { 
+    firebase.auth().signInWithPopup(provider)
+      .then(res => {
+        const { displayName, email, photoURL } = res.user;
+        const signedInUser = {
+          isSignedIn: true,
+          name: displayName,
+          email: email,
+          photo: photoURL
+        };
+        setUser(signedInUser);
+        console.log(signedInUser);
+      })
+      .catch(err => {
+        console.log(err);
+        console.log(err.message);
+    })
+  };
+  let handleSignOut = () => { 
+    firebase.auth().signOut()
+      .then(res => { 
+        const signedOutUser = {
+          isSignedIn: false,
+          name: '',
+          email: '',
+          photo: '',
+          password: ''
+        }
+        setUser(signedOutUser);
+      })
+      .catch(err => { 
+        console.log(err.message);
+      });
+  };
+  const handleChange = e => {
+    const newUserInfo = {
+      ...user
+    };
+    newUserInfo[e.target.name] = e.target.value;
+    setUser(newUserInfo);
+    // console.log(newUserInfo);
+    // console.log(e.target.name,e.target.value);
+  };
+  const createAccount = () => { 
+    console.log(user.email);
+    console.log(user.password);
+
+  };
+  return (
+    <div className="App container">
+      {
+        user.isSignedIn ? <button onClick = {handleSignOut} className = "btn btn-lg btn-primary mt-1">Sign Out</button> : <button onClick = {handleSignIn} className = "btn btn-lg btn-success mt-1">Sign In</button>
+      }
+      {
+        user.isSignedIn && <div>
+          <h3>Welcome, {user.name}</h3>
+          <h4>{user.email}</h4>
+          <img src={user.photo} alt=""/>
+        </div>
+      }
+      <form action={createAccount}>
+      <input type="email" onBlur={handleChange} name="email" className="form-control mt-1 mb-1" id="InputEmail" placeholder="Enter email" />
+      <input type="password" onBlur={handleChange} name="password" className="form-control mb-1" id="InputPass" placeholder="Password" />
+        <button type="submit" className="btn btn-primary" onClick={createAccount}>Create Account</button>
+        <input type="submit" value=""/>
+      </form>
+    </div>
+  );
+}
+
+export default App;
+////Ends App.js(2)
